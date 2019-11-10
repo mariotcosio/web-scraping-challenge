@@ -1,10 +1,11 @@
 from flask import Flask, render_template, redirect
 from flask_pymongo import PyMongo
-import Misssion_to_Mars
+import scrape_mars
+
 
 app = Flask(__name__)
 
-mongo = PyMongo(app)
+mongo = PyMongo(app, uri="mongodb://localhost:27017/mars_app")
 
 @app.route("/")
 def index():
@@ -14,7 +15,7 @@ def index():
 @app.route("/scrape")
 def scraper():
     mars = mongo.db.mars_data
-    mars_data = Misssion_to_Mars.scrape()
+    mars_data = mars.scrape()
     mars.update({}, mars_data, upset=True)
     return redirect("https://localhost:5000/", code=302)
 
